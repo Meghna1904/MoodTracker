@@ -1049,6 +1049,283 @@ button { border: 0; background: none; color: inherit; }
   font-size: 2.2rem;
 }
 
+/* The primary experience is a quiet day, not a dashboard of metrics. */
+.coach-app-shell {
+  grid-template-columns: 188px minmax(0, 1fr);
+}
+
+.coach-sidebar {
+  padding: 30px 20px;
+  background: var(--bg);
+}
+
+.coach-sidebar-brand {
+  margin-bottom: 46px;
+}
+
+.coach-brand-mark {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 0.63rem;
+}
+
+.coach-brand-title {
+  font-size: 0.82rem;
+}
+
+.coach-brand-subtitle {
+  line-height: 1.35;
+}
+
+.coach-sidebar-nav {
+  gap: 2px;
+}
+
+.coach-nav-link {
+  padding: 11px 4px;
+  border-radius: 0;
+  gap: 12px;
+  border-left: 1px solid transparent;
+}
+
+.coach-nav-link:hover,
+.coach-nav-link.is-active {
+  background: transparent;
+  border-left-color: var(--accent);
+}
+
+.coach-nav-icon {
+  width: 14px;
+  font-size: 1rem;
+}
+
+.coach-nav-title {
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.coach-sidebar-footer {
+  gap: 18px;
+}
+
+.coach-sidebar-footer .coach-button {
+  font-size: 0.72rem;
+  border-radius: 5px;
+}
+
+.coach-profile-card {
+  padding-top: 18px;
+}
+
+.coach-topbar {
+  height: 68px;
+  padding: 0 54px;
+  background: var(--bg);
+}
+
+.coach-topbar-button {
+  border: 0;
+  padding: 7px 2px;
+  font-size: 0.7rem;
+}
+
+.coach-content {
+  padding: 46px 54px 72px;
+}
+
+.os-dashboard {
+  max-width: 780px;
+}
+
+.os-day-intro {
+  padding: 24px 0 62px;
+}
+
+.os-date {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.78rem;
+}
+
+.os-day-intro h1 {
+  max-width: 9ch;
+  margin: 24px 0 12px;
+  font-size: clamp(3rem, 7vw, 5.4rem);
+}
+
+.os-day-summary {
+  font-size: 1rem;
+}
+
+.os-schedule-section {
+  border-top-color: var(--line);
+}
+
+.os-section-heading {
+  padding: 16px 0;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.74rem;
+}
+
+.os-timeline-item {
+  grid-template-columns: 72px 18px minmax(0, 1fr);
+  min-height: 112px;
+}
+
+.os-timeline-item time {
+  padding-top: 3px;
+  font-size: 0.78rem;
+}
+
+.os-schedule-task {
+  padding-bottom: 28px;
+}
+
+.os-schedule-task strong {
+  font-size: 1.02rem;
+  font-weight: 500;
+}
+
+.os-schedule-task span {
+  max-width: 42ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--faint);
+}
+
+.os-timeline-item.is-selected .os-schedule-task strong {
+  color: var(--accent);
+}
+
+.os-task-detail {
+  grid-column: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: -17px 0 26px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.os-task-detail .os-actions {
+  width: 100%;
+}
+
+.os-context,
+.os-routines {
+  min-height: 70px;
+  padding: 20px 0;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.os-context p:last-child,
+.os-routines p:last-child {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.os-routines button {
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 940px) {
+  .coach-app-shell {
+    display: block;
+  }
+
+  .coach-sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    padding: 16px 22px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .coach-sidebar-brand,
+  .coach-sidebar-footer {
+    display: none;
+  }
+
+  .coach-sidebar-nav {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+  }
+
+  .coach-nav-link {
+    border-left: 0;
+    border-bottom: 1px solid transparent;
+    padding: 10px 3px 13px;
+  }
+
+  .coach-nav-link:hover,
+  .coach-nav-link.is-active {
+    border-bottom-color: var(--accent);
+  }
+
+  .coach-nav-icon {
+    display: none;
+  }
+
+  .coach-topbar {
+    padding: 0 22px;
+  }
+
+  .coach-content {
+    padding: 28px 22px 54px;
+  }
+}
+
+@media (max-width: 560px) {
+  .os-day-intro {
+    padding-top: 12px;
+    padding-bottom: 46px;
+  }
+
+  .os-day-intro h1 {
+    font-size: 3.45rem;
+  }
+
+  .os-timeline-item {
+    grid-template-columns: 56px 14px minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .os-task-detail {
+    grid-column: 3;
+  }
+
+  .os-context,
+  .os-routines {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
 .landing-heading-line {
   flex: 1;
   height: 1px;

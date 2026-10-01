@@ -3,23 +3,21 @@ import { NavLink } from 'react-router-dom';
 import { useCoach } from '../../context/CoachContext';
 
 const navItems = [
-  { to: '/dashboard', label: 'Daily Pulse', meta: 'Today', icon: '◎' },
-  { to: '/tasks', label: 'Task Manager', meta: '3-move limit', icon: '→' },
-  { to: '/routines', label: 'Routine Tracker', meta: 'Non-negotiables', icon: '□' },
-  { to: '/analytics', label: 'Insights', meta: 'Honesty mirror', icon: '△' },
-  { to: '/mood-cycle', label: 'Energy & Cycle', meta: 'Life check-in', icon: '◌' },
+  { to: '/dashboard', label: 'Today', icon: '◦' },
+  { to: '/tasks', label: 'Plan', icon: '—' },
+  { to: '/analytics', label: 'History', icon: '⌁' },
 ];
 
 const Sidebar: React.FC = () => {
-  const { phaseLabel, cycleDay, honestyRate, adjustMyDay } = useCoach();
+  const { adjustMyDay } = useCoach();
 
   return (
     <aside className="coach-sidebar">
       <div className="coach-sidebar-brand">
         <div className="coach-brand-mark">RC</div>
         <div>
-          <p className="coach-brand-title">The Realistic Coach</p>
-          <p className="coach-brand-subtitle">Discipline over drama</p>
+          <p className="coach-brand-title">Realistic Coach</p>
+          <p className="coach-brand-subtitle">A little room for reality</p>
         </div>
       </div>
 
@@ -31,21 +29,19 @@ const Sidebar: React.FC = () => {
             className={({ isActive }) => `coach-nav-link ${isActive ? 'is-active' : ''}`}
           >
             <span className="coach-nav-icon">{item.icon}</span>
-            <div>
-              <span className="coach-nav-title">{item.label}</span>
-              <span className="coach-nav-meta">{item.meta}</span>
-            </div>
+            <span className="coach-nav-title">{item.label}</span>
           </NavLink>
         ))}
+        <NavLink
+          to="/settings"
+          className={({ isActive }) => `coach-nav-link ${isActive ? 'is-active' : ''}`}
+        >
+          <span className="coach-nav-icon">·</span>
+          <span className="coach-nav-title">Settings</span>
+        </NavLink>
       </nav>
 
       <div className="coach-sidebar-footer">
-        <div className="coach-sidecard">
-          <p className="coach-label">Current context</p>
-          <strong>{phaseLabel} · Day {cycleDay}</strong>
-          <span>Your plan stays flexible when reality changes.</span>
-        </div>
-
         <button className="coach-button coach-button-primary coach-button-full" onClick={() => adjustMyDay()}>
           Adjust my day
         </button>
@@ -54,7 +50,7 @@ const Sidebar: React.FC = () => {
           <div className="coach-profile-avatar">M</div>
           <div>
             <strong>Meghna</strong>
-            <span>Honesty rate {honestyRate}%</span>
+            <span>Personal space</span>
           </div>
         </div>
       </div>

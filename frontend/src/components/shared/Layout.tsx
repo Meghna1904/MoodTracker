@@ -1,13 +1,11 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { useCoach } from '../../context/CoachContext';
 import { useTheme } from '../../context/ThemeContext';
 
 const Layout: React.FC = () => {
-  const navigate = useNavigate();
-  const { flash, clearFlash, phaseLabel, cycleDay } = useCoach();
+  const { flash, clearFlash } = useCoach();
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -17,14 +15,12 @@ const Layout: React.FC = () => {
         <header className="coach-topbar">
           <div>
             <p className="coach-label">Realistic Coach</p>
-            <strong>{phaseLabel} • Day {cycleDay}</strong>
+            <strong>Today</strong>
           </div>
 
           <div className="coach-topbar-actions">
-            <button className="coach-topbar-button">History</button>
-            <button className="coach-topbar-button" onClick={() => navigate('/settings')}>Settings</button>
             <button className="coach-topbar-button" onClick={toggleTheme}>
-              {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+              {theme === 'dark' ? 'Light' : 'Dark'}
             </button>
             <div className="coach-topbar-profile">M</div>
           </div>

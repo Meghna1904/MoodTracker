@@ -29,8 +29,10 @@ function App() {
             <Route element={<Layout />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/tasks" element={<TasksPage />} />
+              <Route path="/plan" element={<TasksPage />} />
               <Route path="/routines" element={<RoutinesPage />} />
               <Route path="/analytics" element={<AnalyticsPage />} />
+              <Route path="/history" element={<AnalyticsPage />} />
               <Route path="/mood-cycle" element={<MoodCycleLog />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Route>

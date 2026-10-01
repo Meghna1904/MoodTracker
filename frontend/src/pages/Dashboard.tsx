@@ -1,24 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCoach } from '../context/CoachContext';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { tasks, routines, completionRate, streakDays, adjustMyDay, energy, mood, cycleDay } = useCoach();
+  const { tasks, routines, adjustMyDay, energy, mood, cycleDay, completeTask } = useCoach();
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const today = new Date();
   const taskCards = tasks
-    .filter((task) => !task.completed)
+    .filter((task) => !task.completed && new Date(task.scheduledFor).toDateString() === today.toDateString())
     .slice()
     .sort((left, right) => new Date(left.scheduledFor).getTime() - new Date(right.scheduledFor).getTime())
     .slice(0, 4);
-  const today = new Date();
-  const dateLabel = today.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+  const dateLabel = today.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
   const greeting = today.getHours() < 12 ? 'Good morning' : today.getHours() < 18 ? 'Good afternoon' : 'Good evening';
-  const dayDescription = energy <= 2 ? 'needs a little more room today.' : energy === 3 ? 'looks manageable today.' : 'has room for meaningful progress.';
+  const dayDescription = energy <= 2 ? 'needs a little more room today.' : 'looks manageable.';
   const insight = mood === 'Depleted' || mood === 'Reactive'
-    ? 'Your energy is asking for a smaller first move.'
+    ? 'You have a little less energy today.'
     : cycleDay > 20
-      ? 'You usually have more energy earlier in this phase.'
-      : 'You tend to do your clearest work before noon.';
+      ? 'You tend to do difficult work earlier in this phase.'
+      : 'You tend to do better with difficult tasks before noon.';
+  const selectedTask = taskCards.find((task) => task.id === selectedTaskId);
+  const flexibleCount = taskCards.filter((task) => task.movesUsed < task.moveLimit).length;
+  const routineDone = routines.filter((routine) => routine.status === 'Done').length;
 
   return (
     <div className="coach-page os-dashboard">
@@ -30,47 +34,53 @@ const Dashboard: React.FC = () => {
 
       <section className="os-schedule-section">
         <div className="os-section-heading">
-          <span>Today</span>
-          <span>{taskCards.length} things · {tasks.filter((task) => !task.completed && task.movesUsed < task.moveLimit).length} flexible</span>
+          <span>Your day</span>
+          <span>{taskCards.length} planned · {flexibleCount} flexible</span>
         </div>
         <div className="os-timeline">
           {taskCards.map((task) => (
-            <article key={task.id} className="os-timeline-item">
+            <article key={task.id} className={`os-timeline-item ${selectedTaskId === task.id ? 'is-selected' : ''}`}>
               <time>{new Date(task.scheduledFor).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</time>
               <div className="os-timeline-line"><span /></div>
-              <button className="os-schedule-task" onClick={() => navigate('/tasks')}>
+              <button className="os-schedule-task" onClick={() => setSelectedTaskId(selectedTaskId === task.id ? null : task.id)}>
                 <strong>{task.title}</strong>
-                <span>{task.description || 'Flexible work'} · {task.priority.toLowerCase()}</span>
+                <span>{task.description || 'Flexible work'}</span>
               </button>
+              {selectedTaskId === task.id && (
+                <div className="os-task-detail">
+                  <span>{new Date(task.scheduledFor).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} · {task.movesUsed < task.moveLimit ? 'Flexible' : 'Fixed'}</span>
+                  <span>Deadline {new Date(task.deadline).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</span>
+                  <div className="os-actions">
+                    <button className="os-button os-button-primary" onClick={() => completeTask(task.id)}>Complete</button>
+                    <button className="os-button" onClick={() => navigate('/tasks')}>Move</button>
+                  </div>
+                </div>
+              )}
             </article>
           ))}
         </div>
       </section>
 
-      <section className="os-insight">
-        <span className="os-insight-mark">◌</span>
+      <section className="os-context">
         <div>
           <p className="os-eyebrow">Something I noticed</p>
           <p>{insight}</p>
         </div>
+        {(energy <= 2 || mood === 'Reactive' || mood === 'Depleted') && (
+          <button className="os-button" onClick={() => adjustMyDay()}>Make today lighter</button>
+        )}
       </section>
 
-      <section className="os-adjustment">
+      {selectedTask && (
+        <span className="sr-only">Viewing details for {selectedTask.title}</span>
+      )}
+
+      <section className="os-routines">
         <div>
-          <p className="os-eyebrow">Life check-in</p>
-          <h2>Give the day a little room.</h2>
-          <p>You mentioned {mood.toLowerCase()} energy. Nothing will be cancelled.</p>
+          <p className="os-eyebrow">Small things</p>
+          <p>{routineDone} of {routines.length} routines complete</p>
         </div>
-        <div className="os-actions">
-          <button className="os-button os-button-primary" onClick={() => adjustMyDay()}>Adjust my day <span>→</span></button>
-          <button className="os-button" onClick={() => navigate('/mood-cycle')}>Keep my plan</button>
-        </div>
-      </section>
-
-      <section className="os-footer-stats">
-        <span>{completionRate}% complete</span>
-        <span>{streakDays} day streak</span>
-        <button onClick={() => navigate('/routines')}>{routines.filter((routine) => routine.status === 'Done').length} routines done →</button>
+        <button onClick={() => navigate('/routines')}>View routines <span>→</span></button>
       </section>
     </div>
   );
