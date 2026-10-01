@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { useCoach } from '../../context/CoachContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -13,16 +13,22 @@ const Layout: React.FC = () => {
       <Sidebar />
       <div className="coach-main-shell">
         <header className="coach-topbar">
-          <div>
-            <p className="coach-label">Realistic Coach</p>
-            <strong>Today</strong>
-          </div>
+          <NavLink className="app-back-link" to="/dashboard">← Today</NavLink>
+          <NavLink className="app-brand" to="/dashboard">
+            <span className="app-brand-mark">◌</span>
+            <strong>realistic</strong>
+          </NavLink>
 
           <div className="coach-topbar-actions">
+            <nav className="app-nav" aria-label="Main navigation">
+              <NavLink to="/dashboard">Today</NavLink>
+              <NavLink to="/plan">Plan</NavLink>
+              <NavLink to="/history">History</NavLink>
+            </nav>
             <button className="coach-topbar-button" onClick={toggleTheme}>
               {theme === 'dark' ? 'Light' : 'Dark'}
             </button>
-            <div className="coach-topbar-profile">M</div>
+            <NavLink className="app-settings-link" to="/settings">Settings</NavLink>
           </div>
         </header>
 
