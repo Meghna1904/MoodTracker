@@ -1,16 +1,21 @@
 package com.moodtracker.model;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
-@Document(collection = "moods")
+@Entity
+@Table(name = "moods", indexes = {
+    @Index(name = "idx_moods_user_timestamp", columnList = "user_id,timestamp")
+})
 public class Mood {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    @Column(name = "user_id", nullable = false)
     private String userId;
+    @Enumerated(EnumType.STRING)
     private MoodType moodType;
     private LocalDateTime timestamp;
     private String notes;

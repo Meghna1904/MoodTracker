@@ -1,14 +1,18 @@
 package com.moodtracker.model;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
 
 @Data
-@Document(collection = "user_preferences")
+@Entity
+@Table(name = "user_preferences", uniqueConstraints = {
+    @UniqueConstraint(name = "uk_preferences_user", columnNames = "user_id")
+})
 public class UserPreferences {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    @Column(name = "user_id", nullable = false)
     private String userId;
     
     // Notification preferences

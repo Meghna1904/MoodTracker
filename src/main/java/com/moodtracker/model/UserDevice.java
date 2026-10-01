@@ -1,17 +1,22 @@
 package com.moodtracker.model;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Data
-@Document(collection = "user_devices")
+@Entity
+@Table(name = "user_devices", uniqueConstraints = {
+    @UniqueConstraint(name = "uk_device_user_token", columnNames = {"user_id", "fcm_token"})
+})
 public class UserDevice {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    @Column(name = "user_id", nullable = false)
     private String userId;
+    @Column(name = "fcm_token", nullable = false)
     private String fcmToken;
     private String deviceType; // IOS, ANDROID
     private String deviceModel;

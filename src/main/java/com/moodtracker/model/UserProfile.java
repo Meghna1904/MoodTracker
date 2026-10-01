@@ -1,15 +1,21 @@
 package com.moodtracker.model;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
-@Document(collection = "user_profiles")
+@Entity
+@Table(name = "user_profiles", uniqueConstraints = {
+    @UniqueConstraint(name = "uk_profile_user", columnNames = "user_id")
+})
 public class UserProfile {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    @Column(name = "user_id", nullable = false)
     private String userId;
     
     // Basic information
@@ -31,9 +37,18 @@ public class UserProfile {
     private LocalDate lastPeriodDate;
     
     // Additional health information
-    private String[] healthConditions;
-    private String[] medications;
-    private String[] allergies;
+    @ElementCollection
+    @CollectionTable(name = "user_profile_health_conditions", joinColumns = @JoinColumn(name = "profile_id"))
+    @Column(name = "condition_name")
+    private List<String> healthConditions;
+    @ElementCollection
+    @CollectionTable(name = "user_profile_medications", joinColumns = @JoinColumn(name = "profile_id"))
+    @Column(name = "medication_name")
+    private List<String> medications;
+    @ElementCollection
+    @CollectionTable(name = "user_profile_allergies", joinColumns = @JoinColumn(name = "profile_id"))
+    @Column(name = "allergy_name")
+    private List<String> allergies;
     
     // Emergency contact
     private String emergencyContactName;

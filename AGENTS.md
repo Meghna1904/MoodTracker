@@ -6,13 +6,13 @@ Two independent apps in a single repo (not a monorepo with shared tooling):
 
 - **Backend** (`src/`): Spring Boot 3.2.0, Java 17, MongoDB. Entry: `com.moodtracker.MoodTrackerApplication`. Runs on port **8081**.
 - **Frontend** (`frontend/`): React 18, TypeScript, Create React App. Runs on port **3000**. Connects to backend at `http://localhost:8081/api` (hardcoded in `frontend/src/services/AxiosInterceptor.ts`).
-- **Database**: MongoDB on port **27017** (via Docker or local install).
+- **Database**: PostgreSQL on port **5432** locally, or Neon PostgreSQL remotely.
 
 ## Prerequisites
 
 - Java 17+
 - Node.js (for frontend)
-- MongoDB running on localhost:27017 (use `docker-compose up -d` or local install)
+- PostgreSQL running on localhost:5432 (use `docker-compose up -d`) or a Neon connection string
 - Maven wrapper included (`mvnw.cmd` on Windows)
 
 ## Commands
@@ -55,6 +55,6 @@ npm test       # Jest
 - **No tests exist yet** in `src/test/`. Don't assume test infrastructure is set up.
 - Backend port is **8081**, not the Spring Boot default 8080.
 - Frontend API base URL is hardcoded, not configurable via env var.
-- MongoDB `auto-index-creation` is enabled — schema changes may affect existing data.
+- JPA schema updates are controlled by `JPA_DDL_AUTO` and default to `update` for local development. Use `validate` with migrations in production.
 - `@EnableScheduling` is active — scheduled tasks run on cron expressions in `application.properties`.
 - The repo includes a bundled Maven distribution (`apache-maven-3.9.9/`) and MongoDB MSI installer — ignore these in code reviews.

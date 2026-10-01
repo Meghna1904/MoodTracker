@@ -5,8 +5,7 @@ import lombok.Data;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.List;
@@ -15,9 +14,14 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "users")
+@Entity
+@Table(name = "users", uniqueConstraints = {
+    @UniqueConstraint(name = "uk_users_username", columnNames = "username"),
+    @UniqueConstraint(name = "uk_users_email", columnNames = "email")
+})
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String username;
     private String email;
@@ -25,11 +29,15 @@ public class User {
     private String password;
     private LocalTime wakeUpTime;
     private LocalTime sleepTime;
+    @ElementCollection
+    @CollectionTable(name = "user_routines", joinColumns = @JoinColumn(name = "user_id"))
     private List<DailyRoutine> routines;
     private boolean trackPeriodCycle;
+    @Embedded
     private PeriodCycle periodCycle;
     
     @Data
+    @Embeddable
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -40,6 +48,7 @@ public class User {
     }
     
     @Data
+    @Embeddable
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
