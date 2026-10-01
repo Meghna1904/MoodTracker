@@ -38,6 +38,12 @@ const Dashboard: React.FC = () => {
           <span>{taskCards.length} planned · {flexibleCount} flexible</span>
         </div>
         <div className="os-timeline">
+          {taskCards.length === 0 && (
+            <div className="os-empty-day">
+              <span>Nothing planned yet.</span>
+              <small>Your day is open.</small>
+            </div>
+          )}
           {taskCards.map((task) => (
             <article key={task.id} className={`os-timeline-item ${selectedTaskId === task.id ? 'is-selected' : ''}`}>
               <time>{new Date(task.scheduledFor).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</time>

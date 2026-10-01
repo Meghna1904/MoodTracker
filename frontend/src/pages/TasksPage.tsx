@@ -1,173 +1,87 @@
 import React, { useMemo, useState } from 'react';
 import { useCoach } from '../context/CoachContext';
 
-const formatDateTime = (value: string) =>
-  new Date(value).toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+const formatTime = (value: string) =>
+  new Date(value).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+const formatDay = (value: string) =>
+  new Date(value).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
 
 const TasksPage: React.FC = () => {
-  const { tasks, moveHistory, moveTask, completeTask } = useCoach();
+  const { tasks, moveTask, completeTask } = useCoach();
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
-
+  const today = new Date();
   const activeTasks = useMemo(
-    () => tasks.slice().sort((left, right) => new Date(left.scheduledFor).getTime() - new Date(right.scheduledFor).getTime()),
-    [tasks]
+    () => tasks
+      .filter((task) => !task.completed)
+      .sort((left, right) => new Date(left.scheduledFor).getTime() - new Date(right.scheduledFor).getTime()),
+    [tasks],
   );
+  const todayTasks = activeTasks.filter((task) => new Date(task.scheduledFor).toDateString() === today.toDateString());
+  const upcomingTasks = activeTasks.filter((task) => new Date(task.scheduledFor).toDateString() !== today.toDateString());
 
-  const totalMovesRemaining = activeTasks.reduce((sum, task) => sum + Math.max(0, task.moveLimit - task.movesUsed), 0);
+  const renderTask = (task: typeof activeTasks[number]) => {
+    const expanded = expandedTaskId === task.id;
+    const nextSlot = new Date(task.scheduledFor);
+    nextSlot.setDate(nextSlot.getDate() + 1);
+
+    return (
+      <article key={task.id} className={`plan-task ${expanded ? 'is-expanded' : ''}`}>
+        <button className="plan-task-main" onClick={() => setExpandedTaskId(expanded ? null : task.id)}>
+          <span className="plan-task-dot" />
+          <span>
+            <strong>{task.title}</strong>
+            <small>{formatDay(task.scheduledFor)} · {formatTime(task.scheduledFor)}</small>
+          </span>
+        </button>
+        {expanded && (
+          <div className="plan-task-detail">
+            <p>{task.description || 'No notes for this task.'}</p>
+            <span>Deadline {formatDay(task.deadline)} at {formatTime(task.deadline)}</span>
+            <div className="plan-task-actions">
+              <button className="coach-button coach-button-primary" onClick={() => completeTask(task.id)}>Complete</button>
+              {task.movesUsed < task.moveLimit && (
+                <button className="coach-button coach-button-secondary" onClick={() => moveTask(task.id, nextSlot.toISOString())}>
+                  Move to tomorrow
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </article>
+    );
+  };
 
   return (
-    <div className="coach-page">
-      <section className="coach-hero">
-        <div>
-          <p className="coach-kicker">One-time objectives</p>
-          <h1 className="coach-title">Task Manager</h1>
-          <p className="coach-copy">
-            Flexible work with strict boundaries. Tasks can move, but never without a cost.
-          </p>
-        </div>
-
-        <div className="coach-panel coach-panel-danger coach-metric-card">
-          <span className="coach-label">Moves Remaining</span>
-          <div className="coach-metric-row">
-            <strong>{totalMovesRemaining}</strong>
-            <span>Across active tasks</span>
-          </div>
-          <div className="coach-progress-track">
-            <div className="coach-progress-fill is-danger" style={{ width: `${Math.min(100, totalMovesRemaining * 12)}%` }} />
-          </div>
-          <p className="coach-footnote">Drag and drop never bypasses deadline or conflict validation.</p>
-        </div>
+    <div className="coach-page plan-page">
+      <section className="plan-intro">
+        <p className="os-date">Your plan</p>
+        <h1 className="coach-title">Make space for what matters.</h1>
+        <p className="coach-copy">A simple list of what is ahead. Select something when you need the details.</p>
       </section>
 
-      <section className="coach-grid coach-grid-tasks">
-        <div className="coach-stack-lg">
-          <div className="coach-section-header">
-            <div>
-              <p className="coach-label">Controlled flexibility</p>
-              <h2>Active Tasks</h2>
-            </div>
-            <div className="coach-inline-badge coach-inline-badge-warn">3-move limit enforced</div>
-          </div>
-
-          <div className="coach-stack-md">
-            {activeTasks.map((task) => {
-              const movesRemaining = task.moveLimit - task.movesUsed;
-              const isExpanded = expandedTaskId === task.id;
-              const plusOneDay = new Date(task.scheduledFor);
-              plusOneDay.setDate(plusOneDay.getDate() + 1);
-              const plusTwoDays = new Date(task.scheduledFor);
-              plusTwoDays.setDate(plusTwoDays.getDate() + 2);
-
-              const options = [
-                { label: 'Move by 1 day', value: plusOneDay.toISOString() },
-                { label: 'Move by 2 days', value: plusTwoDays.toISOString() },
-              ];
-
-              return (
-                <article
-                  key={task.id}
-                  className={`coach-panel coach-task-row ${movesRemaining === 0 ? 'is-locked' : ''}`}
-                >
-                  <div className="coach-task-main">
-                    <button
-                      className={`coach-task-check ${task.completed ? 'is-complete' : ''}`}
-                      onClick={() => completeTask(task.id)}
-                      aria-label={`Toggle ${task.title}`}
-                    />
-                    <div className="coach-stack-xs">
-                      <div className="coach-task-heading">
-                        <h3>{task.title}</h3>
-                        <span className={`coach-chip ${task.priority === 'Urgent' ? 'is-danger' : ''}`}>
-                          {task.priority}
-                        </span>
-                      </div>
-                      <p className="coach-copy-muted">{task.description}</p>
-                      <div className="coach-meta-row">
-                        <span>Scheduled: {formatDateTime(task.scheduledFor)}</span>
-                        <span>Deadline: {formatDateTime(task.deadline)}</span>
-                      </div>
-                      <div className="coach-meta-row">
-                        <span>{movesRemaining}/{task.moveLimit} moves left</span>
-                        <span>{task.completed ? 'Completed' : 'Active'}</span>
-                      </div>
-                      <div className="coach-move-bar">
-                        {Array.from({ length: task.moveLimit }).map((_, index) => (
-                          <span
-                            key={index}
-                            className={`coach-move-segment ${index < task.movesUsed ? 'is-used' : ''}`}
-                          />
-                        ))}
-                      </div>
-                      {isExpanded && (
-                        <div className="coach-inline-panel">
-                          <p className="coach-label">Valid move options</p>
-                          <div className="coach-inline-actions">
-                            {options.map((option) => (
-                              <button
-                                key={option.label}
-                                className="coach-button coach-button-secondary"
-                                onClick={() => moveTask(task.id, option.value)}
-                              >
-                                {option.label}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="coach-task-actions">
-                    <button
-                      className="coach-button coach-button-secondary"
-                      onClick={() => setExpandedTaskId(isExpanded ? null : task.id)}
-                    >
-                      {isExpanded ? 'Hide detail' : 'Open detail'}
-                    </button>
-                    <button
-                      className={`coach-button ${movesRemaining === 0 ? 'coach-button-muted' : 'coach-button-ghost'}`}
-                      onClick={() => !isExpanded && setExpandedTaskId(task.id)}
-                    >
-                      Move task
-                    </button>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+      {activeTasks.length === 0 ? (
+        <section className="plan-empty">
+          <span className="plan-empty-mark">◦</span>
+          <h2>Nothing planned yet.</h2>
+          <p>Your plan is open. Tasks will appear here when you add them.</p>
+        </section>
+      ) : (
+        <div className="plan-list">
+          {todayTasks.length > 0 && (
+            <section>
+              <div className="plan-heading"><span>Today</span><span>{todayTasks.length}</span></div>
+              {todayTasks.map(renderTask)}
+            </section>
+          )}
+          {upcomingTasks.length > 0 && (
+            <section>
+              <div className="plan-heading"><span>Coming up</span><span>{upcomingTasks.length}</span></div>
+              {upcomingTasks.map(renderTask)}
+            </section>
+          )}
         </div>
-
-        <aside className="coach-stack-lg">
-          <div className="coach-panel">
-            <div className="coach-section-header slim">
-              <div>
-                <p className="coach-label">Traceability</p>
-                <h2>Moved Today</h2>
-              </div>
-            </div>
-
-            <div className="coach-stack-sm">
-              {moveHistory.slice(0, 5).map((entry) => (
-                <div key={entry.id} className="coach-history-item">
-                  <span className="coach-history-icon">R</span>
-                  <div>
-                    <strong>{entry.title}</strong>
-                    <p>{formatDateTime(entry.to)}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="coach-panel coach-panel-quote">
-            <p className="coach-label">Strict Friend</p>
-            <h3>Movement is not progress.</h3>
-            <p className="coach-copy">
-              Every move is a negotiation with your future self. The system allows flexibility, not avoidance.
-            </p>
-          </div>
-        </aside>
-      </section>
+      )}
     </div>
   );
 };

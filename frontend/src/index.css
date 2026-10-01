@@ -1306,6 +1306,190 @@ button { border: 0; background: none; color: inherit; }
     padding-bottom: 46px;
   }
 
+  .plan-page {
+    max-width: 780px;
+  }
+
+  .plan-intro {
+    max-width: 560px;
+    padding: 24px 0 54px;
+  }
+
+  .plan-intro .coach-title {
+    max-width: 10ch;
+    margin: 22px 0 14px;
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+  }
+
+  .plan-list {
+    display: grid;
+    gap: 38px;
+  }
+
+  .plan-heading {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0 13px;
+    border-bottom: 1px solid var(--line);
+    color: var(--faint);
+    font-size: 0.72rem;
+  }
+
+  .plan-task {
+    border-bottom: 1px solid var(--line);
+    transition: background-color 180ms ease;
+  }
+
+  .plan-task.is-expanded {
+    background: color-mix(in oklab, var(--surface) 55%, transparent);
+  }
+
+  .plan-task-main {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 16px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+    padding: 19px 4px;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .plan-task-main:hover strong {
+    color: var(--accent);
+  }
+
+  .plan-task-dot {
+    width: 9px;
+    height: 9px;
+    margin-top: 5px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+  }
+
+  .plan-task-main strong,
+  .plan-task-main small {
+    display: block;
+  }
+
+  .plan-task-main strong {
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .plan-task-main small {
+    margin-top: 6px;
+    color: var(--faint);
+    font-size: 0.72rem;
+  }
+
+  .plan-task-detail {
+    display: grid;
+    gap: 9px;
+    padding: 0 4px 20px 30px;
+    color: var(--muted);
+    font-size: 0.76rem;
+  }
+
+  .routine-task {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .routine-task-main {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 19px 4px;
+  }
+
+  .routine-task-main strong,
+  .routine-task-main small {
+    display: block;
+  }
+
+  .routine-task-main strong {
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .routine-task-main small {
+    margin-top: 6px;
+    color: var(--faint);
+    font-size: 0.72rem;
+  }
+
+  .routine-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .plan-task-dot.is-done {
+    background: var(--accent);
+  }
+
+  .routine-task .plan-task-detail {
+    grid-column: 1 / -1;
+    padding-top: 0;
+  }
+
+  .plan-task-detail p {
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  .plan-task-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+
+  .plan-empty,
+  .os-empty-day {
+    color: var(--muted);
+  }
+
+  .plan-empty {
+    min-height: 270px;
+    padding: 52px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .plan-empty-mark {
+    color: var(--accent);
+    font-size: 1.8rem;
+  }
+
+  .plan-empty h2 {
+    margin: 18px 0 8px;
+    font-family: 'Fraunces', serif;
+    font-size: 1.7rem;
+    font-weight: 400;
+  }
+
+  .plan-empty p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.84rem;
+  }
+
+  .os-empty-day {
+    min-height: 92px;
+    padding: 25px 0 30px 102px;
+    display: grid;
+    gap: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .os-empty-day small {
+    color: var(--faint);
+    font-size: 0.74rem;
+  }
+
   .os-day-intro h1 {
     font-size: 3.45rem;
   }

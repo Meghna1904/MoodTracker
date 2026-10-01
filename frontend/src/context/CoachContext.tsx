@@ -72,7 +72,7 @@ interface CoachContextValue extends CoachState {
   exportData: () => void;
 }
 
-const STORAGE_KEY = 'realistic-coach-state-v2';
+const STORAGE_KEY = 'realistic-coach-state-v3';
 const TODAY = new Date();
 
 const addDays = (date: Date, days: number) => {
@@ -87,105 +87,12 @@ const setTime = (date: Date, hour: number, minute: number) => {
   return next;
 };
 
-const iso = (date: Date) => date.toISOString();
-
 const sameDay = (left: string, right: string) => new Date(left).toDateString() === new Date(right).toDateString();
 
 const buildInitialState = (): CoachState => ({
-  tasks: [
-    {
-      id: 'task-1',
-      title: 'Finalize Architectural Review',
-      description: 'Heavy cognitive load. Consider moving if energy stays low.',
-      priority: 'Priority 01',
-      scheduledFor: iso(setTime(TODAY, 10, 0)),
-      deadline: iso(setTime(TODAY, 18, 0)),
-      movesUsed: 2,
-      moveLimit: 3,
-      completed: false,
-    },
-    {
-      id: 'task-2',
-      title: 'Client Audit Follow-up',
-      description: 'Deadline in 2 days. Keep this one close.',
-      priority: 'Priority 02',
-      scheduledFor: iso(setTime(addDays(TODAY, 1), 11, 0)),
-      deadline: iso(setTime(addDays(TODAY, 2), 17, 30)),
-      movesUsed: 1,
-      moveLimit: 3,
-      completed: false,
-    },
-    {
-      id: 'task-3',
-      title: 'Hardware Upgrade Specification',
-      description: 'Select workstation components for the next studio buildout.',
-      priority: 'Priority 03',
-      scheduledFor: iso(setTime(addDays(TODAY, 2), 14, 0)),
-      deadline: iso(setTime(addDays(TODAY, 4), 16, 0)),
-      movesUsed: 0,
-      moveLimit: 3,
-      completed: false,
-    },
-  ],
-  routines: [
-    {
-      id: 'routine-1',
-      title: '4L Water Intake',
-      description: 'Clear skin, clear mind, zero excuses.',
-      status: 'Done',
-      target: 5,
-      progress: 5,
-      history: [{ date: TODAY.toISOString().slice(0, 10), status: 'Done' }],
-    },
-    {
-      id: 'routine-2',
-      title: 'Deep Work (4hrs)',
-      description: 'Phone in drawer. Focus is the new IQ.',
-      status: 'Pending',
-      target: 1,
-      progress: 0,
-      history: [],
-    },
-    {
-      id: 'routine-3',
-      title: 'Morning Mobility',
-      description: 'Reason logged: early client meeting.',
-      status: 'Skipped',
-      reason: 'Early client meeting',
-      target: 1,
-      progress: 0,
-      history: [{ date: TODAY.toISOString().slice(0, 10), status: 'Skipped', reason: 'Early client meeting' }],
-    },
-    {
-      id: 'routine-4',
-      title: 'Sleep Hygiene',
-      description: 'No screens after 9:30 PM. Eight-hour target.',
-      status: 'Pending',
-      target: 1,
-      progress: 0,
-      history: [],
-    },
-  ],
-  moveHistory: [
-    {
-      id: 'move-1',
-      taskId: 'task-archived-1',
-      title: 'Tax Filing Prep',
-      from: iso(setTime(addDays(TODAY, -1), 10, 0)),
-      to: iso(setTime(TODAY, 10, 0)),
-      timestamp: iso(setTime(TODAY, 8, 30)),
-      source: 'manual',
-    },
-    {
-      id: 'move-2',
-      taskId: 'task-archived-2',
-      title: 'Gym Subscription Renewal',
-      from: iso(setTime(TODAY, 8, 30)),
-      to: iso(setTime(addDays(TODAY, 3), 8, 30)),
-      timestamp: iso(setTime(TODAY, 9, 15)),
-      source: 'manual',
-    },
-  ],
+  tasks: [],
+  routines: [],
+  moveHistory: [],
   energy: 3,
   mood: 'Analytical',
   cycleDay: 21,
