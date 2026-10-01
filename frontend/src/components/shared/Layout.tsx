@@ -1,10 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { useCoach } from '../../context/CoachContext';
+import { useTheme } from '../../context/ThemeContext';
 
 const Layout: React.FC = () => {
+  const navigate = useNavigate();
   const { flash, clearFlash, phaseLabel, cycleDay } = useCoach();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="coach-app-shell">
@@ -12,13 +16,16 @@ const Layout: React.FC = () => {
       <div className="coach-main-shell">
         <header className="coach-topbar">
           <div>
-            <p className="coach-label">Soft Adaptive OS</p>
+            <p className="coach-label">Realistic Coach</p>
             <strong>{phaseLabel} • Day {cycleDay}</strong>
           </div>
 
           <div className="coach-topbar-actions">
             <button className="coach-topbar-button">History</button>
-            <button className="coach-topbar-button">Settings</button>
+            <button className="coach-topbar-button" onClick={() => navigate('/settings')}>Settings</button>
+            <button className="coach-topbar-button" onClick={toggleTheme}>
+              {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+            </button>
             <div className="coach-topbar-profile">M</div>
           </div>
         </header>

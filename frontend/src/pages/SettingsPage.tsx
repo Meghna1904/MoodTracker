@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useCoach } from '../context/CoachContext';
+import { useTheme } from '../context/ThemeContext';
 
 const SettingsPage: React.FC = () => {
   const { energy, cycleDay, setEnergy, setCycleDay, exportData } = useCoach();
+  const { theme, setTheme } = useTheme();
   const [name, setName] = useState('Meghna');
   const [saved, setSaved] = useState(false);
 
@@ -24,7 +26,21 @@ const SettingsPage: React.FC = () => {
           </div>
           <div className="coach-panel">
             <p className="coach-label">Display</p>
-            <h2>Today&apos;s context</h2>
+            <h2>Theme & context</h2>
+            <div className="coach-inline-actions">
+              <button
+                className={`coach-button ${theme === 'light' ? 'coach-button-primary' : 'coach-button-secondary'}`}
+                onClick={() => setTheme('light')}
+              >
+                Light
+              </button>
+              <button
+                className={`coach-button ${theme === 'dark' ? 'coach-button-primary' : 'coach-button-secondary'}`}
+                onClick={() => setTheme('dark')}
+              >
+                Dark
+              </button>
+            </div>
             <div className="coach-stack-sm">
               <div className="coach-stat-row"><span>Energy baseline</span><strong>{energy}/5</strong></div>
               <input type="range" min="1" max="5" value={energy} onChange={(event) => setEnergy(Number(event.target.value))} />

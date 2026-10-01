@@ -51,7 +51,7 @@ const Sidebar: React.FC = () => {
         </button>
 
         <div className="coach-profile-card">
-          <div className="coach-profile-avatar">AR</div>
+          <div className="coach-profile-avatar">M</div>
           <div>
             <strong>Meghna</strong>
             <span>Honesty rate {honestyRate}%</span>

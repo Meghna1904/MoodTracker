@@ -11,32 +11,35 @@ import MoodCycleLog from './pages/MoodCycleLog';
 import SettingsPage from './pages/SettingsPage';
 import OnboardingFlow from './pages/OnboardingFlow';
 import { CoachProvider } from './context/CoachContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Shared Components
 import Layout from './components/shared/Layout';
 
 function App() {
   return (
-    <CoachProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LandingHero />} />
-          <Route path="/onboarding" element={<OnboardingFlow />} />
-          
-          {/* App Routes wrapped in Layout */}
-          <Route element={<Layout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/tasks" element={<TasksPage />} />
-            <Route path="/routines" element={<RoutinesPage />} />
-            <Route path="/analytics" element={<AnalyticsPage />} />
-            <Route path="/mood-cycle" element={<MoodCycleLog />} />
-            <Route path="/settings" element={<SettingsPage />} />
-          </Route>
+    <ThemeProvider>
+      <CoachProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<LandingHero />} />
+            <Route path="/onboarding" element={<OnboardingFlow />} />
+            
+            {/* App Routes wrapped in Layout */}
+            <Route element={<Layout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/tasks" element={<TasksPage />} />
+              <Route path="/routines" element={<RoutinesPage />} />
+              <Route path="/analytics" element={<AnalyticsPage />} />
+              <Route path="/mood-cycle" element={<MoodCycleLog />} />
+              <Route path="/settings" element={<SettingsPage />} />
+            </Route>
 
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
-    </CoachProvider>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Router>
+      </CoachProvider>
+    </ThemeProvider>
   );
 }
 
