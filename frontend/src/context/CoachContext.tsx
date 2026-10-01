@@ -72,8 +72,8 @@ interface CoachContextValue extends CoachState {
   exportData: () => void;
 }
 
-const STORAGE_KEY = 'realistic-coach-state-v1';
-const TODAY = new Date('2026-04-03T08:00:00');
+const STORAGE_KEY = 'realistic-coach-state-v2';
+const TODAY = new Date();
 
 const addDays = (date: Date, days: number) => {
   const next = new Date(date);
