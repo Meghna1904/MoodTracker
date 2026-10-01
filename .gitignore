@@ -22,6 +22,7 @@ firebase-service-account.json
 
 # Local agent tooling
 .agents/
+*.git.local-backup/
 
 # IDE and OS files
 .idea/
