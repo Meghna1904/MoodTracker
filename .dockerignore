@@ -1,0 +1,13 @@
+.git
+.gitignore
+.copilot
+frontend
+legacy
+data
+target
+apache-maven-3.9.9
+*.msi
+*.bat
+docker-compose.yml
+firebase-service-account.json
+uploads
