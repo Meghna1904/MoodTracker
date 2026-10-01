@@ -1,92 +1,110 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCoach } from '../context/CoachContext';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { tasks, routines, adjustMyDay, energy, mood, cycleDay, completeTask } = useCoach();
-  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
-  const today = new Date();
-  const taskCards = tasks
-    .filter((task) => !task.completed && new Date(task.scheduledFor).toDateString() === today.toDateString())
-    .slice()
-    .sort((left, right) => new Date(left.scheduledFor).getTime() - new Date(right.scheduledFor).getTime())
-    .slice(0, 4);
-  const dateLabel = today.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
-  const greeting = today.getHours() < 12 ? 'Good morning' : today.getHours() < 18 ? 'Good afternoon' : 'Good evening';
-  const dayDescription = energy <= 2 ? 'needs a little more room today.' : 'looks manageable.';
-  const insight = mood === 'Depleted' || mood === 'Reactive'
-    ? 'You have a little less energy today.'
-    : cycleDay > 20
-      ? 'You tend to do difficult work earlier in this phase.'
-      : 'You tend to do better with difficult tasks before noon.';
-  const selectedTask = taskCards.find((task) => task.id === selectedTaskId);
-  const flexibleCount = taskCards.filter((task) => task.movesUsed < task.moveLimit).length;
-  const routineDone = routines.filter((routine) => routine.status === 'Done').length;
+  const { tasks, routines, energy, mood, completeTask, updateRoutineStatus } = useCoach();
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good night';
+  const flowItems = [
+    ...routines.map((routine) => ({
+      id: routine.id,
+      title: routine.title,
+      complete: routine.status === 'Done',
+      type: 'routine' as const,
+    })),
+    ...tasks
+      .filter((task) => new Date(task.scheduledFor).toDateString() === new Date().toDateString())
+      .map((task) => ({
+        id: task.id,
+        title: task.title,
+        complete: task.completed,
+        type: 'task' as const,
+      })),
+  ];
+  const completed = flowItems.filter((item) => item.complete).length;
+  const period = hour >= 19 || hour < 6 ? 'Night' : hour < 12 ? 'Morning' : hour < 17 ? 'Afternoon' : 'Evening';
+  const periods = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
   return (
-    <div className="coach-page os-dashboard">
-      <section className="os-day-intro">
-        <p className="os-date">{dateLabel}</p>
-        <h1>{greeting}, Meghna.</h1>
-        <p className="os-day-summary">Your day {dayDescription}</p>
+    <div className="flow-dashboard">
+      <section className="flow-hero">
+        <div>
+          <p className="flow-kicker"><span /> TIME TO UNWIND</p>
+          <h1>{greeting}, <em>Meghna.</em></h1>
+          <p className="flow-subtitle">Here&apos;s a little space for what matters <strong>right now.</strong></p>
+        </div>
+        <div className="flow-sky">
+          <span className="flow-moon">☾</span>
+          <strong>{new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</strong>
+          <small>{period} · 7:00 PM — 6:30 AM</small>
+        </div>
       </section>
 
-      <section className="os-schedule-section">
-        <div className="os-section-heading">
-          <span>Your day</span>
-          <span>{taskCards.length} planned · {flexibleCount} flexible</span>
-        </div>
-        <div className="os-timeline">
-          {taskCards.length === 0 && (
-            <div className="os-empty-day">
-              <span>Nothing planned yet.</span>
-              <small>Your day is open.</small>
+      <div className="flow-layout">
+        <main className="flow-main">
+          <div className="flow-section-heading">
+            <div>
+              <p className="flow-kicker">YOUR FLOW</p>
+              <h2>{period} things</h2>
+            </div>
+            <div className="flow-heading-actions">
+              <button onClick={() => navigate('/routines')}>Edit routine</button>
+              <span>{completed}/{flowItems.length || 0} done</span>
+            </div>
+          </div>
+
+          {flowItems.length === 0 ? (
+            <div className="flow-empty">
+              <span>Nothing is asking for your attention.</span>
+              <small>Add something when you are ready.</small>
+            </div>
+          ) : (
+            <div className="flow-list">
+              {flowItems.map((item, index) => (
+                <div className={`flow-row ${item.complete ? 'is-complete' : ''}`} key={`${item.type}-${item.id}`}>
+                  <button
+                    className="flow-check"
+                    onClick={() => item.type === 'task'
+                      ? completeTask(item.id)
+                      : updateRoutineStatus(item.id, item.complete ? 'Pending' : 'Done')}
+                    aria-label={`Mark ${item.title} ${item.complete ? 'incomplete' : 'complete'}`}
+                  />
+                  <span className="flow-title">{item.title}</span>
+                  <span className="flow-index">{String(index + 1).padStart(2, '0')}</span>
+                </div>
+              ))}
             </div>
           )}
-          {taskCards.map((task) => (
-            <article key={task.id} className={`os-timeline-item ${selectedTaskId === task.id ? 'is-selected' : ''}`}>
-              <time>{new Date(task.scheduledFor).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</time>
-              <div className="os-timeline-line"><span /></div>
-              <button className="os-schedule-task" onClick={() => setSelectedTaskId(selectedTaskId === task.id ? null : task.id)}>
-                <strong>{task.title}</strong>
-                <span>{task.description || 'Flexible work'}</span>
-              </button>
-              {selectedTaskId === task.id && (
-                <div className="os-task-detail">
-                  <span>{new Date(task.scheduledFor).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} · {task.movesUsed < task.moveLimit ? 'Flexible' : 'Fixed'}</span>
-                  <span>Deadline {new Date(task.deadline).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</span>
-                  <div className="os-actions">
-                    <button className="os-button os-button-primary" onClick={() => completeTask(task.id)}>Complete</button>
-                    <button className="os-button" onClick={() => navigate('/tasks')}>Move</button>
-                  </div>
-                </div>
-              )}
-            </article>
+          <button className="flow-add" onClick={() => navigate('/plan')}>⊕ &nbsp; Add something to your {period.toLowerCase()}</button>
+        </main>
+
+        <aside className="flow-overview">
+          <div className="flow-overview-heading">
+            <p className="flow-kicker">DAY OVERVIEW</p>
+            <span>☰</span>
+          </div>
+          {periods.map((item) => (
+            <div className={`flow-period ${item === period ? 'is-current' : ''}`} key={item}>
+              <span className="flow-period-icon">{item === 'Night' ? '☾' : item === 'Morning' ? '◌' : item === 'Afternoon' ? '☼' : '✺'}</span>
+              <div>
+                <strong>{item}</strong>
+                <small>{item === period ? `${completed}/${flowItems.length || 0} · now` : 'Open space'}</small>
+              </div>
+            </div>
           ))}
-        </div>
-      </section>
+          <div className="flow-overview-footer">
+            <p>Only your current moment stays in focus <span>✦</span></p>
+            <button onClick={() => navigate('/history')}>Review my day <span>↗</span></button>
+          </div>
+        </aside>
+      </div>
 
-      <section className="os-context">
-        <div>
-          <p className="os-eyebrow">Something I noticed</p>
-          <p>{insight}</p>
-        </div>
-        {(energy <= 2 || mood === 'Reactive' || mood === 'Depleted') && (
-          <button className="os-button" onClick={() => adjustMyDay()}>Make today lighter</button>
-        )}
-      </section>
-
-      {selectedTask && (
-        <span className="sr-only">Viewing details for {selectedTask.title}</span>
-      )}
-
-      <section className="os-routines">
-        <div>
-          <p className="os-eyebrow">Small things</p>
-          <p>{routineDone} of {routines.length} routines complete</p>
-        </div>
-        <button onClick={() => navigate('/routines')}>View routines <span>→</span></button>
+      <button className="flow-checkin" onClick={() => navigate('/mood-cycle')}><span>⊕</span> Add</button>
+      <section className="flow-note">
+        <p className="flow-kicker">LITTLE CHECK-IN</p>
+        <p>{energy <= 2 ? 'Your energy is asking for a softer evening.' : mood === 'Reactive' ? 'You can let the day be quieter now.' : 'How are you feeling in this moment?'}</p>
       </section>
     </div>
   );
