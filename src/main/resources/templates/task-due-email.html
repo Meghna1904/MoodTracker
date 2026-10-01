@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Due Soon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .task-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #84a98c;
+        }
+        .task-title {
+            color: #2f3e46;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .due-time {
+            font-size: 18px;
+            color: #52796f;
+            font-weight: bold;
+        }
+        .message {
+            font-size: 16px;
+            color: #495057;
+            margin-top: 20px;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #52796f;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #6c757d;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="task-card">
+        <h1 class="task-title" th:text="${taskTitle}">Task Title</h1>
+        <p class="due-time">Due: <span th:text="${dueTime}">Due Time</span></p>
+        <p class="message">Don't forget to complete this task! Managing your tasks helps maintain a balanced and productive day.</p>
+        <a href="#" class="cta-button">View Task</a>
+    </div>
+    <div class="footer">
+        <p>This is an automated reminder from your Mood Tracker app.</p>
+        <p>You can manage your task reminders in the app settings.</p>
+    </div>
+</body>
+</html>
