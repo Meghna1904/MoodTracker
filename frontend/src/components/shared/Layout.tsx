@@ -12,14 +12,14 @@ const Layout: React.FC = () => {
       <div className="coach-main-shell">
         <header className="coach-topbar">
           <div>
-            <p className="coach-label">The Strict Friend</p>
+            <p className="coach-label">Soft Adaptive OS</p>
             <strong>{phaseLabel} • Day {cycleDay}</strong>
           </div>
 
           <div className="coach-topbar-actions">
             <button className="coach-topbar-button">History</button>
             <button className="coach-topbar-button">Settings</button>
-            <div className="coach-topbar-profile">AR</div>
+            <div className="coach-topbar-profile">M</div>
           </div>
         </header>
 

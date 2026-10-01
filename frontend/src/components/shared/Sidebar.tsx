@@ -41,19 +41,19 @@ const Sidebar: React.FC = () => {
 
       <div className="coach-sidebar-footer">
         <div className="coach-sidecard">
-          <p className="coach-label">Life check-in</p>
-          <strong>{phaseLabel} • Day {cycleDay}</strong>
-          <span>Defensive mode recommended today.</span>
+          <p className="coach-label">Current context</p>
+          <strong>{phaseLabel} · Day {cycleDay}</strong>
+          <span>Your plan stays flexible when reality changes.</span>
         </div>
 
         <button className="coach-button coach-button-primary coach-button-full" onClick={() => adjustMyDay()}>
-          Adjust My Day
+          Adjust my day
         </button>
 
         <div className="coach-profile-card">
           <div className="coach-profile-avatar">AR</div>
           <div>
-            <strong>Arwa</strong>
+            <strong>Meghna</strong>
             <span>Honesty rate {honestyRate}%</span>
           </div>
         </div>

@@ -1,33 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useCoach } from '../context/CoachContext';
 
 const SettingsPage: React.FC = () => {
+  const { energy, cycleDay, setEnergy, setCycleDay, exportData } = useCoach();
+  const [name, setName] = useState('Meghna');
+  const [saved, setSaved] = useState(false);
+
   return (
-    <div className="p-8">
-      <h1 className="font-serif text-3xl mb-6">Settings</h1>
-      <div className="flex gap-8">
-        <div className="w-64">
-          <ul className="flex flex-col gap-4 font-sans barlow-medium text-muted">
-            <li className="text-white hover-lift cursor-pointer">Profile</li>
-            <li className="hover-lift cursor-pointer">Cycle Settings</li>
-            <li className="hover-lift cursor-pointer">Notification Preferences</li>
-            <li className="hover-lift cursor-pointer">Reschedule Rules</li>
-            <li className="hover-lift cursor-pointer">Hard Day Mode</li>
-            <li className="hover-lift cursor-pointer">Display</li>
-            <li className="hover-lift cursor-pointer text-[var(--status-danger)]">Data & Privacy</li>
-          </ul>
+    <div className="coach-page">
+      <section className="coach-hero">
+        <div>
+          <p className="coach-kicker">Preferences</p>
+          <h1 className="coach-title">Make it yours.</h1>
+          <p className="coach-copy">A quiet place to decide what the system should remember and what it should leave alone.</p>
         </div>
-        <div className="flex-1 card p-8">
-          <h2 className="font-sans barlow-semibold text-xl mb-6">Profile</h2>
-          {/* Form placeholder */}
-          <div className="flex flex-col gap-4 max-w-md">
-            <div>
-              <label className="block text-sm text-muted mb-2">Name</label>
-              <input type="text" className="w-full bg-[#1A1A1A] border border-white/10 rounded-lg p-3 text-white focus:outline-none" defaultValue="Arwa" />
+      </section>
+      <section className="coach-grid coach-grid-routines">
+        <div className="coach-stack-lg">
+          <div className="coach-panel">
+            <div className="coach-section-header slim"><div><p className="coach-label">Profile</p><h2>Basics</h2></div></div>
+            <label className="onboarding-field">Name<input value={name} onChange={(event) => setName(event.target.value)} /></label>
+            <button className="coach-button coach-button-primary" onClick={() => setSaved(true)}>{saved ? 'Saved' : 'Save changes'}</button>
+          </div>
+          <div className="coach-panel">
+            <p className="coach-label">Display</p>
+            <h2>Today&apos;s context</h2>
+            <div className="coach-stack-sm">
+              <div className="coach-stat-row"><span>Energy baseline</span><strong>{energy}/5</strong></div>
+              <input type="range" min="1" max="5" value={energy} onChange={(event) => setEnergy(Number(event.target.value))} />
+              <div className="coach-stat-row"><span>Cycle day</span><strong>{cycleDay}</strong></div>
+              <input type="range" min="1" max="28" value={cycleDay} onChange={(event) => setCycleDay(Number(event.target.value))} />
             </div>
-            <button className="btn btn-pill bg-white text-black px-6 py-2 mt-4 self-start">Save Changes</button>
           </div>
         </div>
-      </div>
+        <aside className="coach-stack-lg">
+          <div className="coach-panel">
+            <p className="coach-label">Data</p>
+            <h2>Keep your record portable.</h2>
+            <p className="coach-copy-muted">Export a readable copy of your current local state whenever you want.</p>
+            <button className="coach-button coach-button-secondary coach-button-full" onClick={exportData}>Export data</button>
+          </div>
+          <div className="coach-panel coach-panel-dark">
+            <p className="coach-label">Privacy</p>
+            <h3>Your signals are yours.</h3>
+            <p className="coach-copy-muted">The coach should explain a suggestion, never make a decision behind your back.</p>
+          </div>
+        </aside>
+      </section>
     </div>
   );
 };
